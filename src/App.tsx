@@ -1,58 +1,37 @@
 import React, { useState, useReducer, useContext, useEffect, useRef, useCallback } from "react"
+import { signin, signup } from "./api/user.api";
 
 
-interface StateType {
-  name: string | undefined,
-  age: number | undefined
-}
-
-interface ActionType {
-  type: Action,
-  name: string | undefined,
-  age: number | undefined
-}
-
-enum Action {
-  SetName = 'setName',
-  SetAge = 'setAge'
-}
-
-const INITIAL_STATE: StateType = { name: 'empty', age: 0 };
-function reducer(state: StateType, action: ActionType): StateType {
-  switch (action.type) {
-    case Action.SetName:
-      return { ...state, name: action.name };
-
-    case Action.SetAge:
-      return { ...state, age: action.age };
-
-    default:
-      return state;
-  }
-}
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const idRef = useRef<HTMLInputElement>(null);
+  const pwRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div>
-      <p>{`name is ${state.name}`}</p>
-      <p>{`age is ${state.age}`}</p>
-      <input
-        type="text"
-        value={state.name === undefined ? '' : state.name}
-        onChange={e => dispatch({ ...state, type: Action.SetName, name: e.target.value })}
-      />
+    <React.Fragment>
+      <div>
+        <input type="text" placeholder="ID" onChange={e => setEmail(e.target.value)}/> <br/>
+        <input type="password" placeholder="PW" onChange={e => setPassword(e.target.value)}/> <br/>
+        <button onClick={() => signup(email, password)}>
+          회원가입
+        </button>
+      </div>
 
-      <input 
-        type="number"
-        value={state.age === undefined ? 0 : state.age}
-        onChange={e => dispatch({ ...state, type: Action.SetAge, age: Number(e.target.value) })}
-      />
-    </div>
+      <hr/>
+
+      <div>
+        <input type="text" ref={idRef} /> <br/>
+        <input type="password" ref={pwRef} /> <br/>
+        <button onClick={() => signin(idRef.current?.value, pwRef.current?.value)}>
+          로그인
+        </button>
+      </div>
+    </React.Fragment>
   )
 }
-
 
 
 export default App
