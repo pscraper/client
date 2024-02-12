@@ -9,22 +9,12 @@ export const signup = (id: string, pw: string) => {
         return null;
     }
 
-    defaultClient.post("/user/signup", 
+    return defaultClient.post("/user/signup", 
         {
             "user_email": id,
             "user_password": pw
-        })
-        .then(res => {
-            console.log(res);
-
-            if (res.status == 200) {
-                sessionStorage.setItem('user_email', id);
-                sessionStorage.setItem('user_password', pw);
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        }
+    )
 }
 
 
@@ -53,4 +43,34 @@ export const signin = (id: string | undefined, pw: string | undefined) => {
         .catch(err => {
             console.log(err);
         })
+}
+
+
+
+export const getAllUser = () => {
+    const BEARER = sessionStorage.getItem("token_type");
+    const ACCESS_TOKEN = sessionStorage.getItem("access_token");
+
+    return defaultClient.get("/user/", {
+        headers: {
+            Authorization: `${BEARER} ${ACCESS_TOKEN}`
+        }
+    })
+}
+
+
+
+export const deleteUser = (email: string, password: string) => {
+    const BEARER = sessionStorage.getItem("token_type");
+    const ACCESS_TOKEN = sessionStorage.getItem("access_token");
+
+    return defaultClient.delete("/user/", {
+        headers: {
+            Authorization: `${BEARER} ${ACCESS_TOKEN}`
+        },
+        data: {
+            "user_email": email,
+            "user_password": password
+        }
+    });
 }
