@@ -1,8 +1,8 @@
 {
-    "jsxBracketSameLine": false,
-    "orderedImports": true,
+    "printWidth": 120,
     "semi": true,
+    "singleQuote": false,
     "tabWidth": 4,
-    "useTabs": false,
-    "printWidth": 80
+    "trailingComma": "es5",
+    "arrowParens": "always"
 }
