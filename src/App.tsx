@@ -21,6 +21,8 @@ const App = () => {
     const res = await signin(email, password);
     localStorage.setItem("token_type", res.token_type);
     localStorage.setItem("access_token", res.access_token);
+    localStorage.setItem("refresh_token", res.refresh_token);
+    console.log(res);
   }
 
   const getUserInfoClick = async () => {
