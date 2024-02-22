@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { signup, signin, getUserInfo } from './api/user.api';
+import { signup, signin, getUserInfo, getMyInfo, signinBasic } from './api/user.api';
 import './App.css';
 
 
@@ -25,9 +25,19 @@ const App = () => {
     console.log(res);
   }
 
+  const onSigninBasicClick = async (email: string, password: string) => {
+    const res = await signinBasic(email, password);
+    console.log(res);
+  }
+
   const getUserInfoClick = async () => {
     const res = await getUserInfo();
     console.log(res); 
+  }
+
+  const getMyInfoClick = async () => {
+    const res = await getMyInfo();
+    console.log(res);
   }
 
   return (
@@ -35,16 +45,11 @@ const App = () => {
       <div>
         <input type="text" placeholder="email" onChange={e => setEmail(e.target.value)}/> 
         <input type="password" placeholder="password" onChange={e => setPassword(e.target.value)}/> 
-        <button onClick={() => onSignupClick(email, password)}>회원가입</button>
-      </div>
-
-      <div>
-        <input type="text" placeholder="email" onChange={e => setEmail(e.target.value)}/> 
-        <input type="password" placeholder="password" onChange={e => setPassword(e.target.value)}/> 
-        <button onClick={() => onSigninClick(email, password)}>로그인</button>
+        <button onClick={() => onSigninBasicClick(email, password)}>로그인</button>
       </div>
 
       <button onClick={getUserInfoClick}>유저 정보</button>
+      <button onClick={getMyInfoClick}>내 정보</button>
     </div>
   )
 }
