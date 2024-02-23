@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { signup, signin, signinBasic, getMyInfo, getUserInfo } from './api/user.api';
+import { signup, signin, signinBasic, getMyInfo, getUserInfo, polling } from './api/user.api';
 import { searchPatch } from './api/patch.api';
 import './App.css';
 
@@ -46,6 +46,15 @@ const App = () => {
     console.log(res);
   }
 
+  const run = async () => {
+    const id = setInterval(async () => {
+        const res = await polling();
+        console.log(res);
+      }, 1000)
+
+      setTimeout(() => clearInterval(id), 10000);
+  }
+
   return (
     <div>
       <div>
@@ -57,6 +66,7 @@ const App = () => {
       <button onClick={getUserInfoClick}>유저 정보</button>
       <button onClick={getMyInfoClick}>내 정보</button>
       <button onClick={onSearchPatch}>패치 검색</button>
+      <button onClick={run}>폴링</button>
     </div>
   )
 }
