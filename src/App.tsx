@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { signup, signin, getUserInfo, getMyInfo, signinBasic } from './api/user.api';
+import { signup, signin, signinBasic, getMyInfo, getUserInfo } from './api/user.api';
+import { searchPatch } from './api/patch.api';
 import './App.css';
 
 
@@ -39,6 +40,11 @@ const App = () => {
     const res = await getMyInfo();
     console.log(res);
   }
+  
+  const onSearchPatch = async () => {
+    const res = await searchPatch();
+    console.log(res);
+  }
 
   return (
     <div>
@@ -50,6 +56,7 @@ const App = () => {
 
       <button onClick={getUserInfoClick}>유저 정보</button>
       <button onClick={getMyInfoClick}>내 정보</button>
+      <button onClick={onSearchPatch}>패치 검색</button>
     </div>
   )
 }

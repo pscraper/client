@@ -1,7 +1,6 @@
 import { defaultClient, formClient } from "./client";
 import { HttpStatusCode } from "axios";
 import { User, UserResponse, TokenResponse } from "../spec/spec";
-import { MediaType } from "../enums/enum";
 
 
 type SignupType = (email: string, password: string) => Promise<UserResponse>
@@ -18,7 +17,7 @@ export const signup: SignupType = async (email, password) => {
         throw Error("[signup] 요청 실패");
     }
 
-    return Promise.resolve((res.data as UserResponse));
+    return Promise.resolve(res.data);
 }
 
 
@@ -30,7 +29,7 @@ export const signin: SigninType = async (email, password) => {
         throw Error("[signin] 요청 실패");
     }
 
-    return Promise.resolve((res.data as TokenResponse));
+    return Promise.resolve(res.data);
 }
 
 
