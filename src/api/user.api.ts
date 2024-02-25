@@ -1,12 +1,15 @@
 import { defaultClient, formClient } from "./client";
 import { HttpStatusCode } from "axios";
 import { User, UserResponse, TokenResponse } from "../spec/spec";
+import { Cookies } from "react-cookie";
 
 
 type SignupType = (email: string, password: string) => Promise<UserResponse>
 type SigninType = (email: string, password: string) => Promise<TokenResponse>
 type SigninBasicType = (email: string, password: string) => Promise<User>
 type GetUserInfoType = () => Promise<UserResponse>
+
+const cookies = new Cookies();
 
 
 export const signup: SignupType = async (email, password) => {
@@ -33,7 +36,6 @@ export const signinBasic: SigninBasicType = async (email, password) => {
     const res = await defaultClient.post("user/signin/basic", undefined, {headers})
     
     if (res.status != HttpStatusCode.Ok) throw Error("");
-    localStorage.setItem("session_id", res.headers["session_id"]);
     return Promise.resolve(res.data);
 }
 
@@ -51,7 +53,9 @@ export const getUserInfo: GetUserInfoType = async () => {
 
 
 export const getMyInfo = async () => {
-    const headers = { "session_id": localStorage.getItem("session_id") };
+    const session_id = cookies.get("JSESSIONID");
+    console.log(session_id);
+    const headers = { session_id };
     const res = await defaultClient.get("/user/basic/me", {headers});
     return Promise.resolve(res.data);
 }
@@ -59,5 +63,6 @@ export const getMyInfo = async () => {
 
 export const polling = async () => {
     const res = await defaultClient.get("/patch/count");
+    if (res.status !== HttpStatusCode.Ok) throw Error("");
     return Promise.resolve(res.data);
 }
