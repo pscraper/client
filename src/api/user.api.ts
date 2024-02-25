@@ -15,7 +15,6 @@ const cookies = new Cookies();
 export const signup: SignupType = async (email, password) => {
     const body = { email, password }
     const res = await defaultClient.post("/user/signup", body)
-
     if (res.status !== HttpStatusCode.Created) throw Error("[signup] 요청 실패");
     return Promise.resolve(res.data);
 }
@@ -23,8 +22,7 @@ export const signup: SignupType = async (email, password) => {
 
 export const signin: SigninType = async (email, password) => {
     const body = { "username": email, "password": password };
-    const res = await formClient.post("/user/signin/oauth2", body);
-    
+    const res = await formClient.post("/user/signin/oauth2", body, { withCredentials: true });
     if (res.status !== HttpStatusCode.Ok) throw Error("[signin] 요청 실패");
     return Promise.resolve(res.data);
 }
