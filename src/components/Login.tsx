@@ -1,9 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signin } from "../api/user.api";
+import { signin, signinBasic } from "../api/user.api";
 
 
 const LoginComponent = () => {
+    useEffect(() => {
+        const accessToken = localStorage.getItem("access_token");
+        const refreshToken = localStorage.getItem("refresh_token");
+
+        if (accessToken != null && refreshToken != null) {
+            
+        }
+
+    }, []);
+
     // useRef: 제네릭 T, 인자 nullable -> RefObject<T>
     // - current가 readonly이지만 하위 current.value는 여전히 수정 가능  
     const idRef = useRef<HTMLInputElement>(null);
@@ -21,11 +31,12 @@ const LoginComponent = () => {
             return;
         }
 
-        const res = await signin(email, pw);
+        const res = await signinBasic(email, pw);
+        const accessToken = res.headers['authorization'];
+        const refreshToken = res.headers['authorization-refresh'];
 
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
-        localStorage.setItem("token_type", res.token_type);
+        localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("refresh_token", refreshToken);
         navigate("/");
     }
 

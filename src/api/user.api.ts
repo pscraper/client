@@ -1,12 +1,12 @@
 import { defaultClient, formClient } from "./client";
-import { HttpStatusCode } from "axios";
+import { AxiosResponse, HttpStatusCode } from "axios";
 import { User, UserResponse, TokenResponse } from "../spec/spec";
 import { Cookies } from "react-cookie";
 
 
 type SignupType = (email: string, password: string) => Promise<UserResponse>
-type SigninType = (email: string, password: string) => Promise<TokenResponse>
-type SigninBasicType = (email: string, password: string) => Promise<User>
+type SigninType = (email: string, password: string) => Promise<AxiosResponse<TokenResponse>>
+type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<User>>
 type GetUserInfoType = () => Promise<UserResponse>
 
 const cookies = new Cookies();
@@ -24,7 +24,7 @@ export const signin: SigninType = async (email, password) => {
     const body = { "username": email, "password": password };
     const res = await formClient.post("/user/signin/oauth2", body, { withCredentials: true });
     if (res.status !== HttpStatusCode.Ok) throw Error("[signin] 요청 실패");
-    return Promise.resolve(res.data);
+    return Promise.resolve(res);
 }
 
 
@@ -34,7 +34,7 @@ export const signinBasic: SigninBasicType = async (email, password) => {
     const res = await defaultClient.post("user/signin/basic", undefined, {headers})
     
     if (res.status != HttpStatusCode.Ok) throw Error("");
-    return Promise.resolve(res.data);
+    return Promise.resolve(res);
 }
 
 

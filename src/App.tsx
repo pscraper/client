@@ -1,23 +1,24 @@
 import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import LoginComponent from './components/Login';
+import TestComponent from './components/Test';
+import HomeComponent from './components/Home';
 
 
 const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const sessionId = localStorage.getItem("access_token");
-    if (sessionId == undefined) {
-      console.log("navigate");
-      navigate("/login");
-    }
+    navigate("/home");
   }, []);
 
   return (
     <div>
-      <p>메인</p>
-      <Link to="/login">로그인</Link>
-      <Link to="/test">테스트</Link>
+      <Routes>
+        <Route path="/home" element={<HomeComponent />} />
+        <Route path="/login" element={<LoginComponent />} />
+        <Route path="/test" element={<TestComponent />} />
+      </Routes>
     </div>
   )
 }
