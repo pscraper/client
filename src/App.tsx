@@ -1,19 +1,17 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './App.css';
-import { getCookie } from './utils/Cookie';
 
 
 const App = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const sessionId = getCookie("session_id");
+    const sessionId = localStorage.getItem("access_token");
     if (sessionId == undefined) {
       console.log("navigate");
       navigate("/login");
     }
-
   }, []);
 
   return (
