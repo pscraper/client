@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import Router from "./utils/Router";
 import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie'
-import './index.css'
+import './main.css'
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

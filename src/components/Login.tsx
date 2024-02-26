@@ -31,6 +31,7 @@ const LoginComponent = () => {
 
     return (
         <div>
+            <h2 className="text-blue-500 text-xl font-bold">Login</h2>
             <input type="text" placeholder="Input Your Email" ref={idRef} /> <br/>
             <input type="password" placeholder="Input Your Password" ref={pwRef} /> <br/>
             <button onClick={e => onLoginBtnClick(e)}>Submit</button>
