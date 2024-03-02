@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { userState } from './store';
-import { UserResponse } from './spec/spec';
 import { Routes, Route } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { userState } from './store';
+import { getUserBySessionId } from './api/user.api';
 import Home from './pages/Home';
 import DashBoard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -11,13 +11,27 @@ import Signup from './pages/Signup';
 import NotFound from './pages/NotFound';
 
 
+
 const App = () => {
   const navigate = useNavigate();
-  const [user, _] = useRecoilState(userState);
+  const [_, setUser] = useRecoilState(userState);
 
   useEffect(() => {
-    console.log(user);
-    user.id == -1 ? navigate("/login") : navigate("/home");
+    const sessionId = localStorage.getItem("session_id");
+    if (sessionId === null) navigate("/login");
+    else {
+      getUserBySessionId(sessionId)
+      .then(res => {
+        if (res.status == 200) {
+          setUser(res.data);
+          navigate("/home");
+        }
+      })
+      .catch(_ => {
+        console.log("세션 만료");
+        navigate("/login");
+      })
+    }
   }, []);
 
   return (

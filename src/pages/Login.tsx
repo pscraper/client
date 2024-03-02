@@ -24,11 +24,14 @@ const Login = () => {
         const res = await signinBasic(email, pw);
         const accessToken = res.headers['authorization'];
         const refreshToken = res.headers['authorization-refresh'];
+        const sessionId = res.headers['authorization-session'];
 
+        localStorage.setItem("session_id", sessionId);
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("refresh_token", refreshToken);
         localStorage.setItem("token_type", "Bearer");
-        navigate("/dashboard");
+
+        navigate("/");
     }
 
     const navigateSignup = (e: React.MouseEvent<HTMLElement>) => {

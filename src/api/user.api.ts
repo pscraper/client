@@ -1,13 +1,12 @@
 import { defaultClient, formClient } from "./client";
 import { AxiosResponse, HttpStatusCode } from "axios";
-import { User, UserResponse, TokenResponse } from "../spec/spec";
+import { UserResponse, TokenResponse } from "../spec/spec";
 
 
 type SignupType = (email: string, password: string) => Promise<AxiosResponse<UserResponse>>
 type SigninType = (email: string, password: string) => Promise<AxiosResponse<TokenResponse>>
-type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<User>>
-type GetUserInfoType = () => Promise<UserResponse>
-
+type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<Boolean>>
+type GetUserBySessionType = (sessionId: string) => Promise<AxiosResponse<UserResponse>>
 
 
 export const signup: SignupType = async (email, password) => {
@@ -29,20 +28,17 @@ export const signin: SigninType = async (email, password) => {
 export const signinBasic: SigninBasicType = async (email, password) => {
     const credentials = btoa(`${email}:${password}`)
     const headers = { "Authorization": `Basic ${credentials}` };
-    const res = await defaultClient.post("user/signin/basic", undefined, {headers})
-    
+    const res = await defaultClient.post("/user/signin/basic", undefined, {headers})
     if (res.status != HttpStatusCode.Ok) throw Error("");
     return Promise.resolve(res);
 }
 
 
-export const getUserInfo: GetUserInfoType = async () => {
-    const tokenType = localStorage.getItem("token_type");
-    const accessToken = localStorage.getItem("access_token");
-    if (tokenType == null || accessToken == null) throw Error("[getUserInfo] 요청 실패");
-    
-    const headers = { "Authorization": `${tokenType} ${accessToken}` };
-    const res = await defaultClient.get("/user/", {headers});
-    if (res.status !== HttpStatusCode.Ok) throw Error("[getUserInfo] 요청 실패");
-    return Promise.resolve(res.data);
+export const getUserBySessionId: GetUserBySessionType = async (sessionId) => {
+    if (sessionId == null) {
+        return Promise.reject();
+    }
+
+    const res = await defaultClient.get(`/user/info/${sessionId}`)
+    return Promise.resolve(res);
 }

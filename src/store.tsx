@@ -7,8 +7,8 @@ import { UserRole } from "./enums/enum";
 export const userState = atom<UserResponse>({
     key: "user",
     default: {
-        id: -1,
-        email: "",
-        role: UserRole.TEMPORAL
+        "email": "회원",
+        "id": -1,
+        "role": UserRole.USER
     }
 });
