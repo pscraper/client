@@ -1,26 +1,34 @@
 import { useEffect } from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import LoginComponent from './components/Login';
-import TestComponent from './components/Test';
-import HomeComponent from './components/Home';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { userState } from './store';
+import { UserResponse } from './spec/spec';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import DashBoard from './pages/Dashboard';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import NotFound from './pages/NotFound';
 
 
 const App = () => {
   const navigate = useNavigate();
+  const [user, _] = useRecoilState(userState);
 
   useEffect(() => {
-    navigate("/home");
+    console.log(user);
+    user.id == -1 ? navigate("/login") : navigate("/home");
   }, []);
 
   return (
-    <div>
-      <Routes>
-        <Route path="/home" element={<HomeComponent />} />
-        <Route path="/login" element={<LoginComponent />} />
-        <Route path="/test" element={<TestComponent />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/home" element={<Home />} />
+      <Route path="/dashboard" element={<DashBoard />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/*" element={<NotFound />} />
+    </Routes>
   )
 }
 
-export default App
+export default App;

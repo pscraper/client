@@ -1,22 +1,20 @@
 import { defaultClient, formClient } from "./client";
 import { AxiosResponse, HttpStatusCode } from "axios";
 import { User, UserResponse, TokenResponse } from "../spec/spec";
-import { Cookies } from "react-cookie";
 
 
-type SignupType = (email: string, password: string) => Promise<UserResponse>
+type SignupType = (email: string, password: string) => Promise<AxiosResponse<UserResponse>>
 type SigninType = (email: string, password: string) => Promise<AxiosResponse<TokenResponse>>
 type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<User>>
 type GetUserInfoType = () => Promise<UserResponse>
 
-const cookies = new Cookies();
 
 
 export const signup: SignupType = async (email, password) => {
     const body = { email, password }
     const res = await defaultClient.post("/user/signup", body)
     if (res.status !== HttpStatusCode.Created) throw Error("[signup] 요청 실패");
-    return Promise.resolve(res.data);
+    return Promise.resolve(res);
 }
 
 
@@ -46,21 +44,5 @@ export const getUserInfo: GetUserInfoType = async () => {
     const headers = { "Authorization": `${tokenType} ${accessToken}` };
     const res = await defaultClient.get("/user/", {headers});
     if (res.status !== HttpStatusCode.Ok) throw Error("[getUserInfo] 요청 실패");
-    return Promise.resolve(res.data);
-}
-
-
-export const getMyInfo = async () => {
-    const session_id = cookies.get("JSESSIONID");
-    console.log(session_id);
-    const headers = { session_id };
-    const res = await defaultClient.get("/user/basic/me", {headers});
-    return Promise.resolve(res.data);
-}
-
-
-export const polling = async () => {
-    const res = await defaultClient.get("/patch/count");
-    if (res.status !== HttpStatusCode.Ok) throw Error("");
     return Promise.resolve(res.data);
 }
