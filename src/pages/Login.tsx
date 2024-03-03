@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signinBasic } from "../api/user.api";
 
 
@@ -31,12 +31,7 @@ const Login = () => {
         localStorage.setItem("refresh_token", refreshToken);
         localStorage.setItem("token_type", "Bearer");
 
-        navigate("/");
-    }
-
-    const navigateSignup = (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
-        navigate("/signup")
+        navigate("/home");
     }
 
     return (
@@ -45,7 +40,7 @@ const Login = () => {
             <input type="text" placeholder="Input Your Email" ref={emailRef} /> <br/>
             <input type="password" placeholder="Input Your Password" ref={pwRef} /> <br/>
             <button onClick={e => onLoginBtnClick(e)}>Submit</button>
-            <button onClick={e => navigateSignup(e)}>계정이 없으신가요?</button>
+            <Link to="/signup">계정이 없으신가요?</Link>
         </div>
     )
 }

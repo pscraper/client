@@ -1,22 +1,39 @@
-import { HttpStatusCode } from "axios";
+import { AxiosResponse, HttpStatusCode } from "axios";
 import { defaultClient } from "./client"
 
 
-interface Response {
-    size: number,
-    data: any
+interface Patch {
+    fileName: string
+    fileDesc: string
 }
 
-type SearchPatchType = () => Promise<Response>
+
+interface PatchResultType {
+    result: Array<Patch>
+}
 
 
-export const searchPatch: SearchPatchType = async () => {
-    const params = { "date": "2024/02", "product_tag": "OFFICE" };
-    const res = await defaultClient.get("/patch", {params});
+type SearchPatchType = (category: string) => Promise<AxiosResponse<PatchResultType>>; 
+type DownloadFileType = (category: string, fileName: string) => Promise<void>;
 
-    if (res.status !== HttpStatusCode.Ok) {
-        throw Error("");
-    }
 
-    return Promise.resolve(res.data)
+export const searchPatch: SearchPatchType = async (category) => {
+    const res = await defaultClient.get(`/file/${category}`);
+    if (res.status !== HttpStatusCode.Ok) return Promise.reject();
+
+    // snake case -> camel case
+    const result = res.data['result'];
+    result.map(obj => ({
+        "fileName": obj.file_name,
+        "fileDesc": obj.file_desc
+    }))
+
+    return Promise.resolve(res);
+}
+
+
+export const downloadFile: DownloadFileType = async (category, fileName) => {
+    const res = await defaultClient.get(`/file/download/${category}/${fileName}`);
+    if (res.status !== HttpStatusCode.Ok) return Promise.reject();
+    return Promise.resolve();
 }

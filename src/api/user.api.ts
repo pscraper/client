@@ -7,6 +7,8 @@ type SignupType = (email: string, password: string) => Promise<AxiosResponse<Use
 type SigninType = (email: string, password: string) => Promise<AxiosResponse<TokenResponse>>
 type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<Boolean>>
 type GetUserBySessionType = (sessionId: string) => Promise<AxiosResponse<UserResponse>>
+type SignoutType = (sessionId: string) => Promise<AxiosResponse<void>>
+type IsValidSessionIdType = (sessionId: string) => Promise<AxiosResponse<boolean>>
 
 
 export const signup: SignupType = async (email, password) => {
@@ -35,10 +37,19 @@ export const signinBasic: SigninBasicType = async (email, password) => {
 
 
 export const getUserBySessionId: GetUserBySessionType = async (sessionId) => {
-    if (sessionId == null) {
-        return Promise.reject();
-    }
+    const res = await defaultClient.get(`/user/info/${sessionId}`);
+    if (res.status == HttpStatusCode.NotFound) return Promise.reject();
+    return Promise.resolve(res);
+}
 
-    const res = await defaultClient.get(`/user/info/${sessionId}`)
+
+export const signout: SignoutType = async (sessionId) => {
+    const res = await defaultClient.get(`/user/signout/${sessionId}`);
+    return Promise.resolve(res);
+}
+
+
+export const isValidSessionId: IsValidSessionIdType = async (sessionId) => {
+    const res = await defaultClient.get(`/user/valid/${sessionId}`);
     return Promise.resolve(res);
 }
