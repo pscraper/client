@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { UserResponse } from "../spec/spec";
-import { downloadFile, searchPatch } from "../api/patch.api";
 import { HttpStatusCode } from "axios";
+import { Patch } from "../api/patch.api";
+import { downloadFile, searchPatch } from "../api/patch.api";
 
 
 interface ReportArticleProps {
@@ -11,21 +12,37 @@ interface ReportArticleProps {
 
 
 const ReportArticle = ({ title, category }: ReportArticleProps) => {
-    const [files, setFiles] = useState<Array<string>>([]);
+    const [files, setFiles] = useState<Array<Patch>>([]);
 
     useEffect(() => {
         if (category !== undefined) {
             searchPatch(category)
-                .then(res => setFiles(res.data["result"].map(patch => patch.fileName)))
+            .then(res => {
+                const data = res.data['result'];
+                setFiles(data);
+            })
         }
     }, []);
 
     const handleFileDownload = (e: React.MouseEvent<HTMLElement>, category: string, file: string) => {
         e.preventDefault();
         downloadFile(category, file)
-            .then(res => {
-                console.log(res);
-            })
+        .then(res => {
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement("a");
+            
+            let fileName = String(res.headers['content-disposition']).split(" ")[1];
+            fileName = fileName.substring(fileName.indexOf("\"") + 1, fileName.lastIndexOf("\""));
+
+            link.href = url;
+            link.setAttribute("download", fileName);
+            document.body.appendChild(link);
+            link.click();
+            return link;
+        })
+        .then(link => {
+            document.body.removeChild(link);
+        })
     }
 
     return (
@@ -35,7 +52,7 @@ const ReportArticle = ({ title, category }: ReportArticleProps) => {
             <ul className="pt-10">
                 {files.map((file, idx) => (
                     <li key={idx}>
-                        <button onClick={e => handleFileDownload(e, category!!, file)}>{file}</button>
+                        <button onClick={e => handleFileDownload(e, category!!, file.fileName)}>{file.fileName}</button>
                     </li>
                 ))}
             </ul>

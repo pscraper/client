@@ -1,25 +1,32 @@
-import React, { useRef } from "react";
-import { useSetRecoilState } from "recoil";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup } from "../api/user.api";
 import { HttpStatusCode } from "axios";
-import { UserResponse } from "../spec/spec";
-import { userState } from "../store";
 
 
 const Signup = () => {
     const emailRef = useRef<HTMLInputElement>(null);    
     const pwRef = useRef<HTMLInputElement>(null);    
     const pwCheckRef = useRef<HTMLInputElement>(null);    
-    const setUser = useSetRecoilState<UserResponse>(userState);
+    const fileRef = useRef<HTMLInputElement>(null);
+
+    const [file, setFile] = useState<string>();
     const navigate = useNavigate();
 
-    const onSignupBtnClick = async (e: React.MouseEvent<HTMLElement>) => {
+    const handleFileupload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        const file = await e.target.files[0];
+        const file_string = URL.createObjectURL(file);
+        setFile(file_string);
+    }
+
+    const handleSignupBtn = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
 
         const email = emailRef.current?.value;
         const pw = pwRef.current?.value;
         const pwCheck = pwCheckRef.current?.value;
+        const fileCheck = fileRef.current?.value;
         
         if (
             email == undefined || 
@@ -27,7 +34,9 @@ const Signup = () => {
             pw == undefined || 
             pw == "" ||
             pwCheck == undefined || 
-            pwCheck == ""
+            pwCheck == "" ||
+            fileCheck == undefined || 
+            fileCheck == "" 
         ) {
             alert("빈 칸을 채워주세요");
             return;
@@ -44,18 +53,18 @@ const Signup = () => {
             throw Error("서버 에러");
         }
 
-        const user = res.data;
-        setUser(user);
-        console.log(user);
         navigate("/home");
     }
 
     return (
-        <div>
+        <div className="signup-container">
             <input type="text" ref={emailRef} placeholder="Sign up Email" /> <br/>
             <input type="password" ref={pwRef} placeholder="Sign up Password" /> <br/>
             <input type="password" ref={pwCheckRef} placeholder="패스워드 확인" /> <br/>
-            <button type="submit" onClick={e => onSignupBtnClick(e)}>Signup</button>
+            <input type="file" ref={fileRef} accept="image/*" onChange={e => handleFileupload(e)} />
+            <button type="submit" onClick={e => handleSignupBtn(e)}>Signup</button>
+
+            <img src={file} />
         </div>
     )
 }

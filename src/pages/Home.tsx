@@ -16,11 +16,11 @@ const categoryMap = new Map<string, string>([
 
 
 const Home = () => {
-    const [sessionId, setSessionId] = useState<string | null>(null);
+    const ses = localStorage.getItem("session_id");
+    const [sessionId, setSessionId] = useState<string | null>(ses);
     const [user, setUser] = useState<UserResponse | null>(null);
 
     useEffect(() => {
-        const ses = localStorage.getItem("session_id");
         if (ses !== null) {
             getUserBySessionId(ses)
                 .then(res => {
@@ -45,12 +45,15 @@ const Home = () => {
             />
             <hr />
             
-            <section className="bg-slate-300">
+            {user && (
+                <section className="bg-slate-300">
                     <p className="px-30 font-sans">
-                        <span className="font-semibold">{user && user.email}</span>
+                        <span className="font-semibold">{user.email}</span>
                         &nbsp;님 환영합니다.
                     </p>
-            </section>
+                </section>
+            )}
+
 
             <main className="grid grid-cols-2 gap-10 py-30">
                 {articleTitles.map((title, idx) => (

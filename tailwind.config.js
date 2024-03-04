@@ -12,7 +12,10 @@ export default {
       borderRadius: px0_50,
       fontSize: px0_100,
       spacing: px0_200,
-      width: px0_400
+      width: px0_400,
+      colors: {
+        "bg-default-color": "#205081"
+      }
     },
   },
   plugins: [],
