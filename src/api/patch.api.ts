@@ -1,5 +1,5 @@
 import { AxiosResponse, HttpStatusCode } from "axios";
-import { defaultClient } from "./client"
+import { authClient as client } from "./client"
 
 
 export interface Patch {
@@ -17,7 +17,7 @@ type SearchPatchType = (category: string) => Promise<AxiosResponse<PatchResultTy
 
 
 export const searchPatch: SearchPatchType = async (category) => {
-    const res = await defaultClient.get(`/file/${category}`);
+    const res = await client.get(`/file/${category}`);
     if (res.status !== HttpStatusCode.Ok) return Promise.reject();
 
     const result: Array<Patch> = res.data['result'];
@@ -31,7 +31,7 @@ export const searchPatch: SearchPatchType = async (category) => {
 
 
 export const downloadFile = async (category: string, fileName: string) => {
-    const res = await defaultClient.get(`/file/download/${category}/${fileName}`, {
+    const res = await client.get(`/file/download/${category}/${fileName}`, {
         responseType: "blob"
     });
     if (res.status !== HttpStatusCode.Ok) return Promise.reject();

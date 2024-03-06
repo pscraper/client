@@ -9,7 +9,6 @@ import NotFound from './pages/NotFound';
 import { isValidSessionId } from './api/user.api';
 
 
-
 const App = () => {
   const navigate = useNavigate();
 

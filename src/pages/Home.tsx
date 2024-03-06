@@ -21,19 +21,7 @@ const Home = () => {
     const [user, setUser] = useState<UserResponse | null>(null);
 
     useEffect(() => {
-        if (ses !== null) {
-            getUserBySessionId(ses)
-                .then(res => {
-                    if (res.status === HttpStatusCode.Ok) {
-                        setUser(res.data);
-                        setSessionId(ses);
-                    }
-                })
-                .catch(err => {
-                    console.error(err.response);
-                }
-            )
-        }
+ 
     }, []);
 
     return (

@@ -57,7 +57,6 @@ const ReportArticle = ({ title, category }: ReportArticleProps) => {
                 ))}
             </ul>
         </article>
-        
     )
 }
 
