@@ -1,13 +1,11 @@
 import { authClient as client, basicClient } from "./client";
 import { AxiosResponse, HttpStatusCode } from "axios";
-import { UserResponse, TokenResponse } from "../spec/spec";
-
+import { User, UserResponse } from "../spec/spec";
 
 
 
 type SignupType = (email: string, password: string) => Promise<AxiosResponse<UserResponse>>
 type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<Boolean>>
-type GetUserBySessionType = (sessionId: string) => Promise<AxiosResponse<UserResponse>>
 type SignoutType = (sessionId: string) => Promise<AxiosResponse<void>>
 type IsValidSessionIdType = (sessionId: string) => Promise<AxiosResponse<boolean>>
 
@@ -29,9 +27,9 @@ export const signinBasic: SigninBasicType = async (email, password) => {
 }
 
 
-export const getUserBySessionId: GetUserBySessionType = async (sessionId) => {
-    const res = await client.get(`/user/info/${sessionId}`);
-    if (res.status == HttpStatusCode.NotFound) return Promise.reject();
+export const getUserByToken: () => Promise<AxiosResponse<User>> = async () => {
+    const res = await client.get("/user/info");
+    if (res.status == HttpStatusCode.Unauthorized) return Promise.reject();
     return Promise.resolve(res);
 }
 
