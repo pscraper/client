@@ -18,7 +18,7 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
   darkMode: "media"
 }
 

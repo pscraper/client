@@ -14,32 +14,47 @@ const PageSideBar = React.memo(() => {
         window.location.reload();
     }
 
+    const handleLogoutBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        localStorage.clear();
+        sessionStorage.clear();
+        navigate("/login");
+    }
+
     const navigatePage = (e: React.MouseEvent<HTMLButtonElement>, path: string) => {
         e.preventDefault();
         navigate(path);
     }
 
     return (
-        <div className="fix pl-20 pr-20 bg-[#205081] flex flex-col justify-around">
+        <div className="bg-[#205081] flex flex-col justify-around px-30">
             <div>
-                <p className="text-16 font-semibold text-slate-300/70 pl-5 mb-20">
-                    Check & Download<br/>
-                    Scraping Result
-                </p>
                 <button 
                     onClick={e => handleTitleBtnClick(e)} 
                     className="cursor-pointer hover:bg-slate-500/50 pl-5 pr-5 pb-5"
                 >
-                    <p className="text-27 text-white font-semibold">
-                        PSCRAPER
-                    </p>
-
-                    <p className="text-27 text-white font-semibold pr-45">
-                        CLIENT
+                    <p className="text-30 text-white font-semibold">
+                        PSCRAPER <br/> MONITORING
                     </p>
                 </button>
+            </div>
 
-                <hr className="mt-10" />
+            <div>
+                <div className="w-200 overflow-hidden rounded-full">
+                    <img src="/img/profile.jpg" />
+                </div>
+
+                <p className="text-17 mt-15 ml-20 text-white">
+                    {localStorage.getItem("email")}
+                </p>
+                
+                <p className="text-17 ml-20 text-white">
+                    {localStorage.getItem("last_login")}
+                </p>
+
+                <button onClick={e => handleLogoutBtnClick(e)} className="text-15 text-slate-300 font-semibold border border-gray-500 px-20 py-10 hover:bg-white hover:text-black ml-50 mt-15">
+                    Logout
+                </button>
             </div>
 
             <nav>
@@ -50,7 +65,7 @@ const PageSideBar = React.memo(() => {
                             <NavIcon />
                         </span>
 
-                        <span className="text-white text-18 font-semibold font-sans relative top-4 ml-20">
+                        <span className="text-white text-25 font-semibold font-sans relative bottom-5 ml-20">
                             {title}
                         </span>
                     </button>
@@ -58,15 +73,12 @@ const PageSideBar = React.memo(() => {
             ))}
             </nav>
 
-            <div></div>
-            <div></div>
-
-            <footer>
-                <span className="text-slate-300 text-40 font-bold">
+            <footer className="mx-auto">
+                <span className="text-slate-300 text-50 font-bold">
                     AhnLab
                 </span>
 
-                <p className="text-slate-300 text-14 pl-3">
+                <p className="text-slate-300 text-18">
                     Serviced by PatchLab
                 </p>
             </footer>
@@ -77,12 +89,12 @@ const PageSideBar = React.memo(() => {
 
 const NavItems = [
     {
-        title: "대시보드",
+        title: "Dashboard",
         path: "/dashboard",
         NavIcon: GoServer
     },
     {
-        title: "패키징",
+        title: "Packaging",
         path: "/packaging",
         NavIcon: PiPackage
     },

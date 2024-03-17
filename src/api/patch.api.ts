@@ -17,7 +17,8 @@ type SearchPatchType = (category: string) => Promise<AxiosResponse<PatchResultTy
 
 
 export const searchPatch: SearchPatchType = async (category) => {
-    const res = await client.get(`/file/${category}`);
+    const accessToken = localStorage.getItem("access_token");
+    const res = await client.get(`/file/${category}`, { headers: { 'Authorization': `Bearer ${accessToken}`}});
     if (res.status !== HttpStatusCode.Ok) return Promise.reject();
 
     const result: Array<Patch> = res.data['result'];
@@ -31,8 +32,12 @@ export const searchPatch: SearchPatchType = async (category) => {
 
 
 export const downloadFile = async (category: string, fileName: string) => {
+    const accessToken = localStorage.getItem("access_token");
     const res = await client.get(`/file/download/${category}/${fileName}`, {
-        responseType: "blob"
+        responseType: "blob",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        }
     });
     if (res.status !== HttpStatusCode.Ok) return Promise.reject();
     return Promise.resolve(res);

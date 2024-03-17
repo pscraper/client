@@ -1,28 +1,40 @@
 import { authClient as client, basicClient } from "./client";
 import { AxiosResponse, HttpStatusCode } from "axios";
 import { User, UserResponse } from "../spec/spec";
+import { UserRole } from "../enums/enum";
 
 
 
-type SignupType = (email: string, password: string) => Promise<AxiosResponse<UserResponse>>
-type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<Boolean>>
+
+
+
+type SignupType = (form: FormData) => Promise<void>
 type SignoutType = (sessionId: string) => Promise<AxiosResponse<void>>
 type IsValidSessionIdType = (sessionId: string) => Promise<AxiosResponse<boolean>>
 
 
-export const signup: SignupType = async (email, password) => {
-    const body = { email, password }
-    const res = await client.post("/user/signup", body)
-    if (res.status !== HttpStatusCode.Created) throw Error("[signup] 요청 실패");
-    return Promise.resolve(res);
+export const signup: SignupType = async (form) => {
+    const res = await client.post("/user/signup", form, { headers: { 'Content-Type': 'multipart/form-data' }})
+    if (res.status === HttpStatusCode.Conflict) return Promise.reject();
+    if (res.status === HttpStatusCode.BadRequest) return Promise.reject();
+    return Promise.resolve();
 }
 
+
+interface SigninBasic {
+    email: string
+    profile_image: string
+    role: UserRole
+    last_login_date: Date
+}
+
+type SigninBasicType = (email: string, password: string) => Promise<AxiosResponse<SigninBasic>>
 
 export const signinBasic: SigninBasicType = async (email, password) => {
     const credentials = btoa(`${email}:${password}`)
     const headers = { "Authorization": `Basic ${credentials}` };
-    const res = await basicClient.post("/user/signin/basic", undefined, {headers})
-    if (res.status != HttpStatusCode.Ok) throw Error("");
+    const res = await basicClient.post<SigninBasic>("/user/signin/basic", undefined, {headers})
+    if (res.status === HttpStatusCode.Unauthorized) return Promise.reject();
     return Promise.resolve(res);
 }
 

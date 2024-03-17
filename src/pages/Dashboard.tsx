@@ -1,4 +1,4 @@
-import PageSideBar from "../layouts/PageSideBar";
+import PageSideBar from "../components/PageSideBar";
 import ReportArticle from "../components/ReportArticle";
 import PageTitle from "../components/PageTitle";
 

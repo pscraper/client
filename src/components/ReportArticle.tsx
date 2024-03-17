@@ -28,7 +28,7 @@ const ReportArticle = ({ title, category }: ReportArticleProps) => {
         e.preventDefault();
         downloadFile(category, file)
         .then(res => {
-            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const url = URL.createObjectURL(new Blob([res.data]));
             const link = document.createElement("a");
             
             let fileName = String(res.headers['content-disposition']).split(" ")[1];
