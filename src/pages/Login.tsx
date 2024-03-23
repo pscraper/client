@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { signinBasic } from "../api/user.api";
 import { useNavigate, Link } from "react-router-dom";
+import { signinBasic } from "../api/user.api";
 
 
 const Login = () => {
@@ -8,7 +8,7 @@ const Login = () => {
     const passwordRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
-    const handleLoginBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleLoginBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const email = emailRef.current?.value;
         const password = passwordRef.current?.value;
@@ -18,23 +18,27 @@ const Login = () => {
             return;
         }
 
-        signinBasic(email, password)
-        .then(res => {
-            if (res) {
-                const accessToken = res.headers['authorization'];
-                const refreshToken = res.headers['authorization-refresh'];
-                const timeInfo = res.data.last_login_date.toString().split("T");
-                const lastDate = timeInfo[0] + " " + timeInfo[1].split(".")[0];
-                localStorage.setItem("access_token", accessToken);
-                localStorage.setItem("refresh_token", refreshToken);
-                localStorage.setItem("email", email);
-                localStorage.setItem("last_login", lastDate);
-                navigate("/");
-            }
-        })
-        .catch(_ => {
+        const result = await signinBasic(email, password);
+
+        if (result.status == 200) {
+            localStorage.clear();
+            const data = result.data;
+    
+            const accessToken = result.headers['authorization'];
+            const refreshToken = result.headers['authorization-refresh'];
+            const timeInfo = data.last_login_date.toString().split("T");
+            const lastDate = timeInfo[0] + " " + timeInfo[1].split(".")[0];
+    
+            localStorage.setItem("access_token", accessToken);
+            localStorage.setItem("refresh_token", refreshToken);
+            localStorage.setItem("email", email);
+            localStorage.setItem("last_login", lastDate);
+            navigate("/")
+        }
+    
+        else {
             alert("일치하지 않는 ID/PW");
-        })
+        }
     }
 
     return (

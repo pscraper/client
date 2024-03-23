@@ -1,39 +1,22 @@
-import { AxiosResponse, HttpStatusCode } from "axios";
+import { HttpStatusCode } from "axios";
 import { authClient as client } from "./client"
 
 
-export interface Patch {
-    fileName: string
-    fileDesc: string
-}
 
+type SearchFileType = (category: string) => Promise<string[]>; 
 
-interface PatchResultType {
-    result: Array<Patch>
-}
-
-
-type SearchPatchType = (category: string) => Promise<AxiosResponse<PatchResultType>>; 
-
-
-export const searchPatch: SearchPatchType = async (category) => {
+export const searchFile: SearchFileType = async (category) => {
     const accessToken = localStorage.getItem("access_token");
     const res = await client.get(`/file/${category}`, { headers: { 'Authorization': `Bearer ${accessToken}`}});
     if (res.status !== HttpStatusCode.Ok) return Promise.reject();
 
-    const result: Array<Patch> = res.data['result'];
-    result.map(obj => ({
-        "fileName": obj.fileName,
-        "fileDesc": obj.fileDesc
-    }))
-
-    return Promise.resolve(res);
+    const result: string[] = res.data['result'].sort();
+    return Promise.resolve(result);
 }
 
-
-export const downloadFile = async (category: string, fileName: string) => {
+export const downloadFile = async (category: string, filename: string) => {
     const accessToken = localStorage.getItem("access_token");
-    const res = await client.get(`/file/download/${category}/${fileName}`, {
+    const res = await client.get(`/file/download/${category}/${filename}`, {
         responseType: "blob",
         headers: {
             "Authorization": `Bearer ${accessToken}`

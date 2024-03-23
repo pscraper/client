@@ -18,7 +18,7 @@ const DashBoard = () => {
                     <section key={idx}>
                         <ReportArticle 
                             title={title} 
-                            category={categoryMap.get(title)} />
+                            category={categoryMap.get(title)!} />
                     </section>
                 ))}
                 </main>

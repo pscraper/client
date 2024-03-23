@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { signup } from "../api/user.api";
 import { useNavigate } from "react-router-dom";
+import { signup } from "../api/user.api";
 
 
 const Signup = () => {
@@ -9,14 +9,8 @@ const Signup = () => {
     const pwCheckRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
-    const handleSignupBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleSignupBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-
-        if (!emailRef || !pwRef || !pwCheckRef) {
-            alert("입력 정보 확인");
-            return;
-        }
-
         const email = emailRef.current?.value;
         const pw = pwRef.current?.value;
         const pwCheck = pwCheckRef.current?.value;
@@ -29,15 +23,10 @@ const Signup = () => {
         const formData = new FormData();
         formData.append("email", email);
         formData.append("password", pw);
-
-        signup(formData)
-        .then(_ => {
-            navigate("/login");
-        })
-        .catch(err => {
-            alert(err);
-            return;
-        })
+        const result = await signup(formData)
+        
+        if (result.status == 201) navigate("/login");
+        else if (result.status == 409) alert("중복된 이메일");
     }
 
 

@@ -1,5 +1,5 @@
 import { authClient as client, basicClient } from "./client";
-import { AxiosResponse, HttpStatusCode } from "axios";
+import { Axios, AxiosResponse, HttpStatusCode } from "axios";
 import { User, UserResponse } from "../spec/spec";
 import { UserRole } from "../enums/enum";
 
@@ -8,16 +8,14 @@ import { UserRole } from "../enums/enum";
 
 
 
-type SignupType = (form: FormData) => Promise<void>
+type SignupType = (form: FormData) => Promise<AxiosResponse<void>>
 type SignoutType = (sessionId: string) => Promise<AxiosResponse<void>>
 type IsValidSessionIdType = (sessionId: string) => Promise<AxiosResponse<boolean>>
 
 
 export const signup: SignupType = async (form) => {
     const res = await client.post("/user/signup", form, { headers: { 'Content-Type': 'multipart/form-data' }})
-    if (res.status === HttpStatusCode.Conflict) return Promise.reject();
-    if (res.status === HttpStatusCode.BadRequest) return Promise.reject();
-    return Promise.resolve();
+    return Promise.resolve(res);
 }
 
 
